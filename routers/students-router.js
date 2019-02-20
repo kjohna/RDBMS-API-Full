@@ -29,7 +29,15 @@ router.get('/:id', async (req, res) => {
       .where({ id: studentId })
       .first();
       if (student) {
-        res.status(200).json(student);
+        const cohort = await db('cohorts')
+          .where({ id: student.cohort_id })
+          .first();
+        studentData = {
+          id: student.id,
+          name: student.name,
+          cohort: cohort.name
+        };
+        res.status(200).json(studentData);
       } else {
         res.status(404).json({ message: `Could not find student with id: ${studentId}` });
       }

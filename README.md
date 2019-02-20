@@ -45,7 +45,7 @@ Add the following endpoints.
 - * `[PUT] /students/:id` This route will update the student with the matching `id` using information sent in the body of the request.
 - * `[DELETE] /students/:id` This route should delete the specified student.
 
-Have the student returned by the `[GET] /students/:id` endpoint include the cohort name and remove the `cohort_id` fields. The returned object should look like this:
+* Have the student returned by the `[GET] /students/:id` endpoint include the cohort name and remove the `cohort_id` fields. The returned object should look like this:
 
 ```js
 {
