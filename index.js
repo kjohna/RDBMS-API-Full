@@ -81,6 +81,43 @@ server.post('/api/cohorts', async (req, res) => {
   }
 });
 
+// PUT update cohort by id
+server.put('/api/cohorts/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const numUpdated = await db('cohorts')
+      .where({ id: id })
+      .update(req.body);
+    if (numUpdated > 0 ) {
+      const updatedItem = await db('cohorts')
+        .where({ id: id })
+        .first();
+      res.status(200).json(updatedItem);
+    } else {
+      res.status(404).json({ message: `No cohort with id: ${id} was found!`});
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+// DELETE cohort by id
+server.delete('/api/cohorts/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const numDeleted = await db('cohorts')
+      .where({ id: id })
+      .del();
+    if (numDeleted > 0) {
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: `No cohort with id: ${id} was found!`});
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 const port = process.env.PORT || 3030;
 
 server.listen(port, () => console.log(`\n running on ${port}\n`));
