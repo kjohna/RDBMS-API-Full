@@ -5,7 +5,7 @@ const knex = require('knex');
 
 const knexConfig = require('./knexfile');
 
-const db = knex(knexConfig);
+const db = knex(knexConfig.development);
 const errors = {
   '19': 'Another record with that value exists'
 }
