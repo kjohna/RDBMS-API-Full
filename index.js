@@ -3,14 +3,16 @@ const express = require('express');
 const helmet = require('helmet');
 
 const cohortsRouter = require('./routers/cohorts-router.js');
+const studentsRouter = require('./routers/students-router.js');
 
 const server = express();
 
 server.use(helmet());
 server.use(express.json());
 
-// base routes here
+// routes here
 server.use('/api/cohorts', cohortsRouter); // cohorts routes handler
+server.use('/api/students', studentsRouter); // students routes
 
 
 // make sure it's working..
