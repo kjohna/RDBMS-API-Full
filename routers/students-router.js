@@ -38,36 +38,27 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// GET students corresponding to student id
-router.get('/:id/students', async (req, res) => {
-  const studentId = req.params.id;
-  try {
-    const student = await db('students')
-      .where({ id: studentId })
-      .first();
-      if (student) {
-        const students = await db('students')
-          .where({ student_id: studentId });
-        res.status(200).json(students);
-      } else {
-        res.status(404).json({ message: `Could not find student with id: ${studentId}` });
-      }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
 // POST new student
 router.post('/', async (req, res) => {
-  try {
-    const [id] = await db('students').insert(req.body);
-    const newstudent = await db('students')
-      .where({ id: id })
-      .first();
-    res.status(201).json(newstudent)
-  } catch (error) {
-    const msg = errors[error.errno] || error;
-    res.status(500).json({ message: msg });
+  const studentData = req.body;
+  if (studentData){
+    if (studentData.name && studentData.cohort_id) {
+      // ok to attempt post
+      try {
+        const [id] = await db('students').insert(req.body);
+        const newstudent = await db('students')
+          .where({ id: id })
+          .first();
+        res.status(201).json(newstudent)
+      } catch (error) {
+        const msg = errors[error.errno] || error;
+        res.status(500).json({ message: msg });
+      }
+    } else {
+      res.status(400).json({ message: "Please provide name and cohort_id to add student." });
+    }
+  } else {
+    res.status(400).json({ message: "No student data given!" });
   }
 });
 
