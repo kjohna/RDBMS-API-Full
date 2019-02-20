@@ -6,6 +6,9 @@ const knex = require('knex');
 const knexConfig = require('./knexfile');
 
 const db = knex(knexConfig);
+const errors = {
+  '19': 'Another record with that value exists'
+}
 
 const server = express();
 
@@ -61,6 +64,20 @@ server.get('/api/cohorts/:id/students', async (req, res) => {
       }
   } catch (error) {
     res.status(500).json(error);
+  }
+});
+
+// POST new cohort
+server.post('/api/cohorts', async (req, res) => {
+  try {
+    const [id] = await db('cohorts').insert(req.body);
+    const newCohort = await db('cohorts')
+      .where({ id: id })
+      .first();
+    res.status(201).json(newCohort)
+  } catch (error) {
+    const msg = errors[error.errno] || error;
+    res.status(500).json({ message: msg });
   }
 });
 
