@@ -28,6 +28,23 @@ server.get('/api/cohorts', async (req, res) => {
   }
 });
 
+// GET cohorts by id
+server.get('/api/cohorts/:id', async (req, res) => {
+  const cohortId = req.params.id;
+  try {
+    const cohort = await db('cohorts')
+      .where({ id: cohortId })
+      .first();
+      if (cohort) {
+        res.status(200).json(cohort);
+      } else {
+        res.status(404).json({ message: `Could not find cohort with id: ${cohortId}` });
+      }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 const port = process.env.PORT || 3030;
 
 server.listen(port, () => console.log(`\n running on ${port}\n`));
