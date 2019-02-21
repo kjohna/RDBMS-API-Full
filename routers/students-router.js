@@ -25,19 +25,14 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const studentId = req.params.id;
   try {
-    const student = await db('students')
-      .where({ id: studentId })
+    const student = await db
+      .select(db.raw(`students.id as 'id', students.name as 'name', cohorts.name as 'cohort'`))
+      .from('students')
+      .leftJoin('cohorts', 'students.cohort_id', '=', 'cohorts.id')
+      .where('students.id', studentId)
       .first();
       if (student) {
-        const cohort = await db('cohorts')
-          .where({ id: student.cohort_id })
-          .first();
-        studentData = {
-          id: student.id,
-          name: student.name,
-          cohort: cohort.name
-        };
-        res.status(200).json(studentData);
+        res.status(200).json(student);
       } else {
         res.status(404).json({ message: `Could not find student with id: ${studentId}` });
       }
